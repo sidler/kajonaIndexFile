@@ -1,54 +1,91 @@
 <?php
 
-$strFolder = "";
-$strFiles = "";
 
-foreach(scandir(".") as $strOneFile) {
+$arrFiles = scandir(".");
+$arrFiles = array_diff($arrFiles, array(".", "..", ".DS_Store"));
 
-    if($strOneFile == "." || $strOneFile == ".." || $strOneFile == ".DS_Store" || $strOneFile == "Icon") {
-        continue;
-    }
+uasort($arrFiles, function($strFile1, $strFile2) {
+    if(is_dir(__DIR__."/".$strFile1) && is_dir(__DIR__."/".$strFile2))
+        return strcmp($strFile1, $strFile2);
 
+    if(is_file(__DIR__."/".$strFile1) && is_file(__DIR__."/".$strFile2))
+        return strcmp($strFile1, $strFile2);
+
+    if(is_file(__DIR__."/".$strFile1) && is_dir(__DIR__."/".$strFile2))
+        return 1;
+    else
+        return -1;
+
+});
+
+
+$strPhpVersion = phpversion();
+$strHostname = $_SERVER['HTTP_HOST'];
+$strWebserver = $_SERVER['SERVER_SOFTWARE'];
+
+
+
+$strRows = "";
+$strButtons = "";
+$strPrevChar = "";
+$bitFiles = false;
+foreach($arrFiles as $strOneFile) {
 
     $strIcon = "<i class='fa fa-folder-o' aria-hidden='true'></i>";
-    if(is_file(__DIR__.$strOneFile)) {
+    if(is_file(__DIR__."/".$strOneFile)) {
         $strIcon = "<i class='fa fa-file-code-o' aria-hidden='true'></i>";
+
+        if(!$bitFiles) {
+            $bitFiles = true;
+            $strButtons .= "<a role='button' class='btn btn-secondary' href='#files'>files</a>";
+            $strRows .= <<<HTML
+                <tr>
+                  <td class="font-weight-bold" colspan="8"><a name='files'></a>Files</td>
+                </tr>
+HTML;
+        }
+
+    } else {
+        if($strPrevChar != $strOneFile[0]) {
+            $strPrevChar = $strOneFile[0];
+            $strButtons .= "<a role='button' class='btn btn-secondary' href='#{$strPrevChar}'>{$strPrevChar}</a>";
+            $strRows .= <<<HTML
+                <tr>
+                  <td class="font-weight-bold" colspan="8"><a name='{$strPrevChar}'></a>{$strPrevChar}</td>
+                </tr>
+HTML;
+        }
     }
 
-    if(is_dir(__DIR__."/".$strOneFile)) {
+    $strFrontend = "";
+    if(is_dir(__DIR__."/".$strOneFile."/core/module_pages") || is_file(__DIR__."/".$strOneFile."/core/module_pages.phar")) {
+        $strFrontend= "<a href='".$strOneFile."/index.php'><i class='fa fa-picture-o'></i> index.php</a>";
+    }
 
-        $strFrontend = "";
-        if(is_dir(__DIR__."/".$strOneFile."/core/module_pages") || is_file(__DIR__."/".$strOneFile."/core/module_pages.phar")) {
-            $strFrontend= "<a href='".$strOneFile."/index.php'><i class='fa fa-picture-o'></i> index.php</a>";
-        }
+    $strBackend = "";
+    if(is_dir(__DIR__."/".$strOneFile."/core/module_system") || is_file(__DIR__."/".$strOneFile."/core/module_system.phar")) {
+        $strBackend= "<a href='".$strOneFile."/index.php?admin=1'><i class='fa fa-sliders'></i> /admin</a>";
+    }
 
+    $strInstaller = "";
+    if(is_file(__DIR__."/".$strOneFile."/installer.php")) {
+        $strInstaller = "<a href='".$strOneFile."/installer.php'><i class='fa fa-plus-square-o'></i> installer.php</a>";
+    }
 
-        $strBackend = "";
-        if(is_dir(__DIR__."/".$strOneFile."/core/module_system") || is_file(__DIR__."/".$strOneFile."/core/module_system.phar")) {
-            $strBackend= "<a href='".$strOneFile."/index.php?admin=1'><i class='fa fa-sliders'></i> /admin</a>";
-        }
+    $strDebug = "";
+    if(is_file(__DIR__."/".$strOneFile."/debug.php")) {
+        $strDebug = "<a href='".$strOneFile."/debug.php'><i class='fa fa-bug'></i> debug.php</a>";
+    }
 
-
-        $strInstaller = "";
-        if(is_file(__DIR__."/".$strOneFile."/installer.php")) {
-            $strInstaller = "<a href='".$strOneFile."/installer.php'><i class='fa fa-plus-square-o'></i> installer.php</a>";
-        }
-
-
-        $strDebug = "";
-        if(is_file(__DIR__."/".$strOneFile."/debug.php")) {
-            $strDebug = "<a href='".$strOneFile."/debug.php'><i class='fa fa-bug'></i> debug.php</a>";
-        }
-
-        $strBranch = "";
-        if(is_file(__DIR__."/".$strOneFile."/.git/HEAD")) {
-            $strBranch = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/HEAD");
-        }
-
-
-        $strFolder .= <<<HTML
+    $strBranch = "";
+    if(is_file(__DIR__."/".$strOneFile."/.git/HEAD")) {
+        $strBranch = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/HEAD");
+    }
+    
+    $strRows .= <<<HTML
     <tr>
-      <td><i class='fa fa-folder-o' aria-hidden='true'></i></td>
+      <td></td>
+      <td>{$strIcon}</td>
       <td><a href="{$strOneFile}">{$strOneFile}</a></td>
       <td>{$strBackend}</td>
       <td>{$strFrontend}</td>
@@ -57,57 +94,49 @@ foreach(scandir(".") as $strOneFile) {
       <td>{$strBranch}</td>
     </tr>
 HTML;
-    } else {
-
-
-        $strFiles .= <<<HTML
-    <tr>
-      <td><i class='fa fa-file-code-o' aria-hidden='true'></i></td>
-      <td><a href="{$strOneFile}">{$strOneFile}</a></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-HTML;
-    }
 }
+
+
 
 
 echo <<<HTML
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    
-    <title>{$_SERVER['HTTP_HOST']}</title>
-    
+    <title>{$strHostname}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css"  crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"  crossorigin="anonymous">
 </head>
 <body>
 
 <style type="text/css">
- body {
+ body { 
     font-size: 0.8rem;
  }
- 
- 
  .table td, .table th {
     padding: 0.25rem;
+ }
+ .btn-group {
+ padding: 1rem 0;
  }
 </style>
 
 <div class="container">
+<div class="row text-xs-center">
+  <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+    {$strButtons}
+  </div>
+    
+</div>
 
- <div class="row">
+<div class="row">
 <table class="table table-striped table-hover">
   <thead>
     <tr>
+      <th></th>
       <th>#</th>
       <th>Name</th>
       <th>Backend</th>
@@ -118,14 +147,18 @@ echo <<<HTML
     </tr>
   </thead>
   <tbody>
-    {$strFolder}
-    {$strFiles}
+    {$strRows}
   </tbody>
 </table>
-
+</div>
+<div class="row">
+<pre>
+<code>PHP Version: {$strPhpVersion}
+Hostname: {$strHostname}
+Webserver: {$strWebserver}</code>
+</pre>
 </div>
 </div>
 </body>
-
 </html>
 HTML;
