@@ -19,30 +19,30 @@ foreach(scandir(".") as $strOneFile) {
 
         $strFrontend = "";
         if(is_dir(__DIR__."/".$strOneFile."/core/module_pages") || is_file(__DIR__."/".$strOneFile."/core/module_pages.phar")) {
-            $strFrontend= "<a href='".$strOneFile."/index.php'><i class='fa fa-picture-o'> index.php</a>";
+            $strFrontend= "<a href='".$strOneFile."/index.php'><i class='fa fa-picture-o'></i> index.php</a>";
         }
 
 
         $strBackend = "";
         if(is_dir(__DIR__."/".$strOneFile."/core/module_system") || is_file(__DIR__."/".$strOneFile."/core/module_system.phar")) {
-            $strBackend= "<a href='".$strOneFile."/index.php?admin=1'><i class='fa fa-sliders'> /admin</a>";
+            $strBackend= "<a href='".$strOneFile."/index.php?admin=1'><i class='fa fa-sliders'></i> /admin</a>";
         }
 
 
         $strInstaller = "";
         if(is_file(__DIR__."/".$strOneFile."/installer.php")) {
-            $strInstaller = "<a href='".$strOneFile."/installer.php'><i class='fa fa-plus-square-o'> installer.php</a>";
+            $strInstaller = "<a href='".$strOneFile."/installer.php'><i class='fa fa-plus-square-o'></i> installer.php</a>";
         }
 
 
         $strDebug = "";
         if(is_file(__DIR__."/".$strOneFile."/debug.php")) {
-            $strDebug = "<a href='".$strOneFile."/debug.php'><i class='fa fa-bug'> debug.php</a>";
+            $strDebug = "<a href='".$strOneFile."/debug.php'><i class='fa fa-bug'></i> debug.php</a>";
         }
 
         $strBranch = "";
         if(is_file(__DIR__."/".$strOneFile."/.git/HEAD")) {
-            $strBranch = file_get_contents(__DIR__."/".$strOneFile."/.git/HEAD");
+            $strBranch = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/HEAD");
         }
 
 
@@ -88,7 +88,6 @@ echo <<<HTML
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css"  crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"  crossorigin="anonymous">
-	<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/js/bootstrap.min.js"  crossorigin="anonymous"></script>	-->
 </head>
 <body>
 
@@ -96,6 +95,7 @@ echo <<<HTML
  body {
     font-size: 0.8rem;
  }
+ 
  
  .table td, .table th {
     padding: 0.25rem;
