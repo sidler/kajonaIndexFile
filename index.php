@@ -82,10 +82,10 @@ HTML;
         $strBranch = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/HEAD");
 
         if(is_file(__DIR__."/".$strOneFile."/.git/modules/core/HEAD")) {
-            $strBranch .= "<br /><i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/HEAD")." core";
+            $strBranch .= "<br /><i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/modules/core/HEAD")." core";
         }
         if(is_file(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")) {
-            $strBranch .= "<br /><i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/HEAD")." core_agp";
+            $strBranch .= "<br /><i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")." core_agp";
         }
     }
 
@@ -169,4 +169,3 @@ Webserver: {$strWebserver}</code>
 </body>
 </html>
 HTML;
-
