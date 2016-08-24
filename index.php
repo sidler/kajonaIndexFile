@@ -92,19 +92,22 @@ HTML;
         $strDebug = "<a href='".$strOneFile."/debug.php'><i class='fa fa-bug'></i> debug.php</a>";
     }
 
-    $strBranch = "";
+    $arrBranches = [];
     if(is_file(__DIR__."/".$strOneFile."/.git/HEAD")) {
-        $strBranch = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/HEAD");
-
-        if(is_file(__DIR__."/".$strOneFile."/.git/modules/core/HEAD")) {
-            $strBranch .= "<br /><i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/modules/core/HEAD")." core";
-        }
-        if(is_file(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")) {
-            $strBranch .= "<br /><i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")." core_agp";
-        }
-
-        $strBranch = str_replace("ref: refs/heads/", "", $strBranch);
+        $arrBranches[] = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/HEAD");
     }
+    if(is_file(__DIR__."/".$strOneFile."/.git/modules/core/HEAD")) {
+        $arrBranches[] = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/modules/core/HEAD")." core";
+    }
+    if(is_file(__DIR__."/".$strOneFile."/core/.git/HEAD")) {
+        $arrBranches[] = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/core/.git/HEAD")." core";
+    }
+    if(is_file(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")) {
+        $arrBranches[] = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")." core_agp";
+    }
+
+    $strBranch = str_replace("ref: refs/heads/", "", implode("<br />", $arrBranches));
+
 
     $arrActions = [];
     if(is_dir(__DIR__."/".$strOneFile."/project/temp/cache")) {
