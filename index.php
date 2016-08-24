@@ -26,11 +26,10 @@ $strWebserver = $_SERVER['SERVER_SOFTWARE'];
 
 
 if(!empty($_GET["clearcache"])) {
-    $strDir = $_GET["clearcache"];
-    if(is_dir($_GET["clearcache"])) {
-        delDirrec($_GET["clearcache"]);
+    $strDir = realpath(__DIR__."/".($_GET["clearcache"])."/project/temp/cache");
+    if(strpos($strDir, __DIR__) === 0 && is_dir($strDir)) {
+        delDirrec($strDir);
     }
-    
     header("Location: ".$_SERVER["PHP_SELF"]);
     return;
 }
@@ -109,7 +108,7 @@ HTML;
 
     $arrActions = [];
     if(is_dir(__DIR__."/".$strOneFile."/project/temp/cache")) {
-        $arrActions[] = "<a href='".$_SERVER['PHP_SELF']."?clearcache=".urlencode(__DIR__."/".$strOneFile."/project/temp/cache")."'><i class='fa fa-trash-o'></i> Delete /project/temp/cache</a>";
+        $arrActions[] = "<a href='".$_SERVER['PHP_SELF']."?clearcache=".urlencode($strOneFile)."'><i class='fa fa-trash-o'></i> Delete /project/temp/cache</a>";
     }
 
     $strActions = implode("<br />", $arrActions);
