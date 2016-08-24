@@ -30,6 +30,9 @@ if(!empty($_GET["clearcache"])) {
     if(is_dir($_GET["clearcache"])) {
         delDirrec($_GET["clearcache"]);
     }
+    
+    header("Location: ".$_SERVER["PHP_SELF"]);
+    return;
 }
 
 function delDirrec($strDir) {
