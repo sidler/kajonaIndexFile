@@ -25,6 +25,23 @@ $strWebserver = $_SERVER['SERVER_SOFTWARE'];
 
 
 
+if(!empty($_GET["clearcache"])) {
+    $strDir = $_GET["clearcache"];
+    if(is_dir($_GET["clearcache"])) {
+        delDirrec($_GET["clearcache"]);
+    }
+}
+
+function delDirrec($strDir) {
+    $arrFiles = array_diff(scandir($strDir), array('.','..'));
+    foreach ($arrFiles as $strFile) {
+        (is_dir("$strDir/$strFile")) ? delDirrec("$strDir/$strFile") : unlink("$strDir/$strFile");
+    }
+    return rmdir($strDir);
+}
+
+
+
 $strRows = "";
 $strButtons = "";
 $strPrevChar = "";
@@ -57,10 +74,6 @@ HTML;
         }
     }
 
-    $strFrontend = "";
-    if(is_dir(__DIR__."/".$strOneFile."/core/module_pages") || is_file(__DIR__."/".$strOneFile."/core/module_pages.phar")) {
-        $strFrontend= "<a href='".$strOneFile."/index.php'><i class='fa fa-picture-o'></i> index.php</a>";
-    }
 
     $strBackend = "";
     if(is_dir(__DIR__."/".$strOneFile."/core/module_system") || is_file(__DIR__."/".$strOneFile."/core/module_system.phar")) {
@@ -87,7 +100,16 @@ HTML;
         if(is_file(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")) {
             $strBranch .= "<br /><i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")." core_agp";
         }
+
+        $strBranch = str_replace("ref: refs/heads/", "", $strBranch);
     }
+
+    $arrActions = [];
+    if(is_dir(__DIR__."/".$strOneFile."/project/temp/cache")) {
+        $arrActions[] = "<a href='".$_SERVER['PHP_SELF']."?clearcache=".urlencode(__DIR__."/".$strOneFile."/project/temp/cache")."'><i class='fa fa-trash-o'></i> Delete /project/temp/cache</a>";
+    }
+
+    $strActions = implode("<br />", $arrActions);
 
     $strRows .= <<<HTML
     <tr>
@@ -95,13 +117,14 @@ HTML;
       <td>{$strIcon}</td>
       <td><a href="{$strOneFile}">{$strOneFile}</a></td>
       <td>{$strBackend}</td>
-      <td>{$strFrontend}</td>
       <td>{$strInstaller}</td>
       <td>{$strDebug}</td>
       <td>{$strBranch}</td>
+      <td>{$strActions}</td>
     </tr>
 HTML;
 }
+
 
 
 
@@ -147,10 +170,10 @@ echo <<<HTML
       <th>#</th>
       <th>Name</th>
       <th>Backend</th>
-      <th>Frontend</th>
       <th>Installer</th>
       <th>Debug</th>
       <th>Branch</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
