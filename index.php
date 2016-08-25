@@ -51,7 +51,7 @@ $bitFiles = false;
 foreach($arrFiles as $strOneFile) {
 
     $strIcon = "<i class='fa fa-folder-o' aria-hidden='true'></i>";
-    if(is_file(__DIR__."/".$strOneFile)) {
+    if(@is_file(__DIR__."/".$strOneFile)) {
         $strIcon = "<i class='fa fa-file-code-o' aria-hidden='true'></i>";
 
         if(!$bitFiles) {
@@ -78,31 +78,31 @@ HTML;
 
 
     $strBackend = "";
-    if(is_dir(__DIR__."/".$strOneFile."/core/module_system") || is_file(__DIR__."/".$strOneFile."/core/module_system.phar")) {
+    if(@is_dir(__DIR__."/".$strOneFile."/core/module_system") || @is_file(__DIR__."/".$strOneFile."/core/module_system.phar")) {
         $strBackend= "<a href='".$strOneFile."/index.php?admin=1'><i class='fa fa-sliders'></i> /admin</a>";
     }
 
     $strInstaller = "";
-    if(is_file(__DIR__."/".$strOneFile."/installer.php")) {
+    if(@is_file(__DIR__."/".$strOneFile."/installer.php")) {
         $strInstaller = "<a href='".$strOneFile."/installer.php'><i class='fa fa-plus-square-o'></i> installer.php</a>";
     }
 
     $strDebug = "";
-    if(is_file(__DIR__."/".$strOneFile."/debug.php")) {
+    if(@is_file(__DIR__."/".$strOneFile."/debug.php")) {
         $strDebug = "<a href='".$strOneFile."/debug.php'><i class='fa fa-bug'></i> debug.php</a>";
     }
 
     $arrBranches = [];
-    if(is_file(__DIR__."/".$strOneFile."/.git/HEAD")) {
+    if(@is_file(__DIR__."/".$strOneFile."/.git/HEAD")) {
         $arrBranches[] = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/HEAD");
     }
-    if(is_file(__DIR__."/".$strOneFile."/.git/modules/core/HEAD")) {
+    if(@is_file(__DIR__."/".$strOneFile."/.git/modules/core/HEAD")) {
         $arrBranches[] = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/modules/core/HEAD")." core";
     }
-    if(is_file(__DIR__."/".$strOneFile."/core/.git/HEAD")) {
+    if(@is_file(__DIR__."/".$strOneFile."/core/.git/HEAD")) {
         $arrBranches[] = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/core/.git/HEAD")." core";
     }
-    if(is_file(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")) {
+    if(@is_file(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")) {
         $arrBranches[] = "<i class='fa fa-code-fork'></i> ".file_get_contents(__DIR__."/".$strOneFile."/.git/modules/core_agp/HEAD")." core_agp";
     }
 
@@ -110,7 +110,7 @@ HTML;
 
 
     $arrActions = [];
-    if(is_dir(__DIR__."/".$strOneFile."/project/temp/cache")) {
+    if(@is_dir(__DIR__."/".$strOneFile."/project/temp/cache")) {
         $arrActions[] = "<a href='".$_SERVER['PHP_SELF']."?clearcache=".urlencode($strOneFile)."'><i class='fa fa-trash-o'></i> Delete /project/temp/cache</a>";
     }
 
